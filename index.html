@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>DNF 奶系职业buff量计算</title>
+</head>
+
+<body>
+    <div>
+        <label>四维:</label>
+        <input type="number" id="attribute" value="8600">
+        <label>buff等级:</label>
+        <input type="number" id="buff_lv" value="21">
+    </div>
+    <div>
+        <label>固定增益量:</label>
+        <input type="number" id="fixed_gain" value="140000">
+        <label>百分比增益量:</label>
+        <input type="number" id="percentage_gain" value="10"><span>%</span>
+    </div>
+    <div>
+        <label>固定三攻:</label>
+        <input type="number" id="fixed_attack" value="20">
+        <label>百分比三攻:</label>
+        <input type="number" id="percentage_attack" value="0"><span>%</span>
+    </div>
+    <div>
+        <label>是否CP武器:</label>
+        <input type="checkbox" id="is_cp_weapon" checked="checked">
+    </div>
+    <div>
+        <div>站街buff 三攻</div>
+        <div>
+            <label>奶妈：</label>
+            <input type="number" id="FemaleCrusader" disabled="disabled">
+        </div>
+        <div>
+            <label>缪斯：</label>
+            <input type="number" id="Muse" disabled="disabled">
+        </div>
+        <div>
+            <label>奶萝：</label>
+            <input type="number" id="Enchantress" disabled="disabled">
+        </div>
+        <div>
+            <label>奶爸：</label>
+            <input type="number" id="MaleCrusader" disabled="disabled">
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="./index.js"></script>
+</body>
+
+</html>
