@@ -46,7 +46,7 @@ const BASE_INFO = {
         "attribute_offset":4345,
         "gain_coeff":0.000035699,
         "gain_offset":3498,
-        "cp_coeff":1.08
+        "cp_coeff":1.008
     },
 };
 function calc_character(character,data) {
