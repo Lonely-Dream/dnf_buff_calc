@@ -3,6 +3,7 @@ DNF中奶系职业buff量计算
 
 # 参考
 [DNF 奶量计算器](https://github.com/Vixiu/count_buff)
+[DNF 计算器](https://gitee.com/dcalc/dnfcalculating_110/)
 
 # 计算
 $$
