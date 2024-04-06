@@ -64,6 +64,25 @@ BASE_INFO.MaleCrusader.attack.forEach((e,i)=>{
 });
 
 
+// var g_buff_base = {
+//     "is_first":true,
+
+//     "FemaleCrusader": {
+//         "attack": 1
+//     },
+//     "Muse": {
+//         "attack": 1
+//     },
+//     "Enchantress": {
+//         "attack": 1
+//     },
+//     "MaleCrusader": {
+//         "attack": 1
+//     }
+// };
+
+var g_is_set_base = false;
+
 function calc_character(character,data) {
     const base_info = BASE_INFO[character];
     var attack_buff1 = (base_info.attack[data.buff_lv]+data.fixed_attack);
@@ -80,6 +99,19 @@ function calc_character(character,data) {
     }
     return attack_buff;
 }
+
+function calc_percentage(){
+    [
+        "FemaleCrusader","Muse","Enchantress","MaleCrusader"
+    ].forEach(character => {
+        const old_attack_buff = parseFloat(document.getElementById(character).value);
+        const new_attack_buff = parseFloat(document.getElementById(character+"_new").value);
+
+        const per = 100*(new_attack_buff - old_attack_buff)/old_attack_buff;
+        document.getElementById(character+"_new_percentage").value = per.toFixed(2)+"%";
+    });
+}
+
 function calc() {
     const data = {
         attribute : parseInt(document.getElementById("attribute").value) | 0,
@@ -95,10 +127,36 @@ function calc() {
     
     [
         "FemaleCrusader","Muse","Enchantress","MaleCrusader"
-    ].forEach(element => {
-        var attack_buff = calc_character(element,data);
-        document.getElementById(element).value = attack_buff.toFixed(2);
+    ].forEach(character => {
+        var attack_buff = calc_character(character,data);
+        // 不管是否需要计算提升率，新的buff 都赋值
+        document.getElementById(character+"_new").value = attack_buff.toFixed(2);
+
+        if(g_is_set_base){
+            // 如果需要计算提升率，则不会对旧buff进行赋值，需要计算提升率
+            calc_percentage();
+        }
+        else{
+            document.getElementById(character).value = attack_buff.toFixed(2);
+        }
     });
+}
+
+function set_base(){
+    g_is_set_base = true;
+    var elements = document.getElementsByClassName("percentage");
+    for(var i = 0; i < elements.length; i++){
+        elements[i].hidden = "";
+    }
+    calc_percentage();
+}
+
+function clear_base(){
+    g_is_set_base = false;
+    var elements = document.getElementsByClassName("percentage");
+    for(var i = 0; i < elements.length; i++){
+        elements[i].hidden = "hidden";
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -118,5 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
     ].forEach(element => {
         element.addEventListener("input", calc);
     });
+    document.getElementById("set_base").addEventListener("click", set_base);
+    document.getElementById("clear_base").addEventListener("click", clear_base);
+
     calc();
 });
