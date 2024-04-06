@@ -1,3 +1,6 @@
+const CHARACTER_TABE = [
+    "FemaleCrusader","Muse","Enchantress","MaleCrusader"
+];
 
 var BASE_INFO = {
     "FemaleCrusader": {
@@ -64,23 +67,6 @@ BASE_INFO.MaleCrusader.attack.forEach((e,i)=>{
 });
 
 
-// var g_buff_base = {
-//     "is_first":true,
-
-//     "FemaleCrusader": {
-//         "attack": 1
-//     },
-//     "Muse": {
-//         "attack": 1
-//     },
-//     "Enchantress": {
-//         "attack": 1
-//     },
-//     "MaleCrusader": {
-//         "attack": 1
-//     }
-// };
-
 var g_is_set_base = false;
 
 function calc_character(character,data) {
@@ -101,9 +87,7 @@ function calc_character(character,data) {
 }
 
 function calc_percentage(){
-    [
-        "FemaleCrusader","Muse","Enchantress","MaleCrusader"
-    ].forEach(character => {
+    CHARACTER_TABE.forEach(character => {
         const old_attack_buff = parseFloat(document.getElementById(character).value);
         const new_attack_buff = parseFloat(document.getElementById(character+"_new").value);
 
@@ -125,9 +109,7 @@ function calc() {
     };
     data.total_gain = data.fixed_gain*(1+data.percentage_gain/100);
     
-    [
-        "FemaleCrusader","Muse","Enchantress","MaleCrusader"
-    ].forEach(character => {
+    CHARACTER_TABE.forEach(character => {
         var attack_buff = calc_character(character,data);
         // 不管是否需要计算提升率，新的buff 都赋值
         document.getElementById(character+"_new").value = attack_buff.toFixed(2);
@@ -142,12 +124,20 @@ function calc() {
     });
 }
 
+function sync_buff(){
+    CHARACTER_TABE.forEach(character => {
+        document.getElementById(character).value = document.getElementById(character+"_new").value;
+        document.getElementById(character+"_new_percentage").value = "0%";
+    });
+}
+
 function set_base(){
     g_is_set_base = true;
     var elements = document.getElementsByClassName("percentage");
     for(var i = 0; i < elements.length; i++){
         elements[i].hidden = "";
     }
+    sync_buff();
     calc_percentage();
 }
 
@@ -157,6 +147,7 @@ function clear_base(){
     for(var i = 0; i < elements.length; i++){
         elements[i].hidden = "hidden";
     }
+    sync_buff();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
