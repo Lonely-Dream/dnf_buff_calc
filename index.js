@@ -1,57 +1,90 @@
 
-const BASE_INFO = {
+var BASE_INFO = {
     "FemaleCrusader": {
-        "attack": [0,
-            39, 41, 43, 44, 45, 47, 49, 50, 52, 53, 
-            54, 56, 58, 59, 61, 62, 63, 65, 67, 69, 
-            70, 71, 73, 75, 77, 79, 80, 81, 83, 85, 
-            86, 88, 89, 90, 92, 94, 95, 97, 98, 100],
+        "attack": [0, 
+            38, 40, 42, 43, 44, 46, 48, 49, 51, 52, 
+            53, 55, 57, 58, 60, 61, 62, 64, 66, 68, 
+            69, 70, 72, 74, 75, 77, 78, 79, 81, 83, 
+            84, 86, 87, 88, 90, 92, 93, 95, 96, 98],
         "attribute_coeff":1/665,
         "attribute_offset":4350,
-        "gain_coeff":0.0000378880649805069,
+        "gain_coeff":1/26395,
         "gain_offset":3500,
         "cp_coeff":1.08
     },
     "Muse": {
-        "attack": [0,
+        "attack": [0, 
             40, 42, 44, 46, 47, 49, 51, 52, 54, 55, 
             56, 58, 60, 61, 63, 64, 65, 67, 70, 72, 
-            73, 74, 76, 78, 80, 82, 83, 84, 86, 88,
+            73, 74, 76, 78, 80, 82, 83, 84, 86, 88, 
             89, 92, 93, 94, 96, 98, 99, 101, 102, 104],
         "attribute_coeff":1/665,
         "attribute_offset":4350,
-        "gain_coeff":0.0000378880649805069,
+        "gain_coeff":1/26395,
         "gain_offset":3500,
         "cp_coeff":1.08
     },
     "Enchantress": {
-        "attack": [0,
+        "attack": [0, 
             34, 35, 37, 38, 39, 41, 42, 43, 45, 46, 
             47, 49, 50, 51, 53, 54, 55, 57, 58, 60, 
             61, 62, 64, 65, 66, 68, 69, 70, 72, 73, 
             74, 76, 77, 78, 80, 81, 82, 84, 85, 87],
         "attribute_coeff":1/665,
         "attribute_offset":4350,
-        "gain_coeff":0.0000378880649805069,
+        "gain_coeff":1/26395,
         "gain_offset":3500,
         "cp_coeff":1.08
     },
     "MaleCrusader": {
-        "attack": [0,
-            44, 45, 47, 49, 50, 52, 54, 55, 57, 59, 
-            60, 62, 64, 65, 67, 69, 70, 72, 74, 77, 
-            78, 80, 82, 83, 85, 87, 88, 90, 92, 93, 
-            95, 97, 98, 100, 102, 103, 105, 107, 108, 111],
+        "attack": [0, 
+            43, 44, 46, 48, 49, 51, 53, 54, 56, 58, 
+            59, 61, 63, 64, 66, 68, 69, 71, 73, 75, 
+            76, 78, 80, 81, 83, 85, 86, 88, 90, 91, 
+            93, 95, 96, 98, 100, 101, 103, 105, 106],
         "attribute_coeff":1/620,
         "attribute_offset":4345,
-        "gain_coeff":0.000035699,
+        "gain_coeff":1/28012,
         "gain_offset":3498,
         "cp_coeff":1.008
     },
 };
+
+// 奶妈和奶爸 的buff基础三攻和力智需要修正
+function fix_buff_base(e,coeff){
+    e *= coeff;
+    return Math.round(e);
+}
+
+BASE_INFO.FemaleCrusader.attack.forEach((e,i)=>{
+    BASE_INFO.FemaleCrusader.attack[i] = fix_buff_base(e,1.02);
+});
+BASE_INFO.MaleCrusader.attack.forEach((e,i)=>{
+    BASE_INFO.MaleCrusader.attack[i] = fix_buff_base(e,1.02);
+});
+
+
+// var g_buff_base = {
+//     "is_first":true,
+
+//     "FemaleCrusader": {
+//         "attack": 1
+//     },
+//     "Muse": {
+//         "attack": 1
+//     },
+//     "Enchantress": {
+//         "attack": 1
+//     },
+//     "MaleCrusader": {
+//         "attack": 1
+//     }
+// };
+
+var g_is_set_base = false;
+
 function calc_character(character,data) {
     const base_info = BASE_INFO[character];
-    console.log(data);
     var attack_buff1 = (base_info.attack[data.buff_lv]+data.fixed_attack);
     attack_buff1 *= (data.attribute*base_info.attribute_coeff+1);
     attack_buff1 *= (1+data.percentage_attack/100);
@@ -66,12 +99,24 @@ function calc_character(character,data) {
     }
     return attack_buff;
 }
+
+function calc_percentage(){
+    [
+        "FemaleCrusader","Muse","Enchantress","MaleCrusader"
+    ].forEach(character => {
+        const old_attack_buff = parseFloat(document.getElementById(character).value);
+        const new_attack_buff = parseFloat(document.getElementById(character+"_new").value);
+
+        const per = 100*(new_attack_buff - old_attack_buff)/old_attack_buff;
+        document.getElementById(character+"_new_percentage").value = per.toFixed(2)+"%";
+    });
+}
+
 function calc() {
-    console.log("calc");
     const data = {
         attribute : parseInt(document.getElementById("attribute").value) | 0,
         buff_lv : parseInt(document.getElementById("buff_lv").value) | 0,
-        fixed_gain : parseFloat(document.getElementById("fixed_gain").value) | 0,
+        fixed_gain : parseInt(document.getElementById("fixed_gain").value) | 0,
         percentage_gain : parseFloat(document.getElementById("percentage_gain").value) | 0,
         fixed_attack : parseInt(document.getElementById("fixed_attack").value) | 0,
         percentage_attack : parseFloat(document.getElementById("percentage_attack").value) | 0,
@@ -82,10 +127,36 @@ function calc() {
     
     [
         "FemaleCrusader","Muse","Enchantress","MaleCrusader"
-    ].forEach(element => {
-        var attack_buff = calc_character(element,data);
-        document.getElementById(element).value = attack_buff.toFixed(2);
+    ].forEach(character => {
+        var attack_buff = calc_character(character,data);
+        // 不管是否需要计算提升率，新的buff 都赋值
+        document.getElementById(character+"_new").value = attack_buff.toFixed(2);
+
+        if(g_is_set_base){
+            // 如果需要计算提升率，则不会对旧buff进行赋值，需要计算提升率
+            calc_percentage();
+        }
+        else{
+            document.getElementById(character).value = attack_buff.toFixed(2);
+        }
     });
+}
+
+function set_base(){
+    g_is_set_base = true;
+    var elements = document.getElementsByClassName("percentage");
+    for(var i = 0; i < elements.length; i++){
+        elements[i].hidden = "";
+    }
+    calc_percentage();
+}
+
+function clear_base(){
+    g_is_set_base = false;
+    var elements = document.getElementsByClassName("percentage");
+    for(var i = 0; i < elements.length; i++){
+        elements[i].hidden = "hidden";
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -105,5 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
     ].forEach(element => {
         element.addEventListener("input", calc);
     });
+    document.getElementById("set_base").addEventListener("click", set_base);
+    document.getElementById("clear_base").addEventListener("click", clear_base);
+
     calc();
 });
